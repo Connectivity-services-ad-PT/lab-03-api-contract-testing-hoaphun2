@@ -27,12 +27,17 @@ jobs:
 
       - name: Start Prism mock servers and wait for health
         run: |
-          npm run mock:iot > prism-iot.log 2>&1 &
-          npm run mock:vision > prism-vision.log 2>&1 &
+          npx prism mock contracts/iot-ingestion.openapi.yaml -p 4010 --host 0.0.0.0 > prism-iot.log 2>&1 &
+          IOT_PID=$!
+          npx prism mock contracts/ai-vision.openapi.yaml -p 4011 --host 0.0.0.0 > prism-vision.log 2>&1 &
+          VISION_PID=$!
           sleep 5
           ps -ef | grep '[p]rism' || true
-          npx wait-on http://localhost:4010/health --timeout 60000
-          npx wait-on http://localhost:4011/health --timeout 60000
+          echo "Checking IoT mock health..."
+          npx wait-on http://127.0.0.1:4010/health --timeout 60000 || (echo "IoT mock failed to start"; cat prism-iot.log; false)
+          echo "Checking AI Vision mock health..."
+          npx wait-on http://127.0.0.1:4011/health --timeout 60000 || (echo "AI Vision mock failed to start"; cat prism-vision.log; false)
+          echo "Prism mocks are ready"
 
       - name: Run Newman contract tests
         run: npm run test:mock
