@@ -34,9 +34,9 @@ jobs:
           sleep 5
           ps -ef | grep '[p]rism' || true
           echo "Checking IoT mock health..."
-          npx wait-on http://127.0.0.1:4010/health --timeout 60000 || (echo "IoT mock failed to start"; cat prism-iot.log; false)
+          npx wait-on http-get://127.0.0.1:4010/health --timeout 60000 || (echo "IoT mock failed to start"; cat prism-iot.log; false)
           echo "Checking AI Vision mock health..."
-          npx wait-on http://127.0.0.1:4011/health --timeout 60000 || (echo "AI Vision mock failed to start"; cat prism-vision.log; false)
+          npx wait-on http-get://127.0.0.1:4011/health --timeout 60000 || (echo "AI Vision mock failed to start"; cat prism-vision.log; false)
           echo "Prism mocks are ready"
 
       - name: Run Newman contract tests
