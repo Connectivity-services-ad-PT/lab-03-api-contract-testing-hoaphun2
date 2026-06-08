@@ -1,0 +1,10 @@
+FIT4110 Lab 03 contract lint report
+
+Command: npm run lint:contracts
+
+Result: PASS
+No results with a severity of 'error' found.
+
+Notes:
+- Added info.contact metadata to both contracts to satisfy Spectral.
+- Contracts currently have no error-level lint issues.
